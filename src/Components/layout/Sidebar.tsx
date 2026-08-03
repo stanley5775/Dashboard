@@ -11,16 +11,7 @@ export default function Sidebar() {
               Dashboard
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/profile" className="block py-2 px-4 hover:bg-gray-700">
-              Profile
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/settings" className="block py-2 px-4 hover:bg-gray-700">
-              Settings
-            </NavLink>
-          </li>
+
         </ul>
       </nav>
     </aside>
