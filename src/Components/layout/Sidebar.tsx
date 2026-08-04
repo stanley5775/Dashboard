@@ -4,9 +4,7 @@ import {
   FolderKanban,
   BarChart3,
   CheckSquare,
-  Settings,
   LogOut,
-  BriefcaseBusiness,
 } from "lucide-react";
 
 import { useAuth } from "../../context/AuthContext";
@@ -66,11 +64,6 @@ export default function Sidebar() {
         <NavLink to="/tasks" className={linkClass}>
           <CheckSquare size={20} />
           Tasks
-        </NavLink>
-
-        <NavLink to="/settings" className={linkClass}>
-          <Settings size={20} />
-          Settings
         </NavLink>
       </nav>
 
