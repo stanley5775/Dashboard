@@ -2,7 +2,6 @@ import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 
 interface User {
-  id: string;
   name: string;
   email: string;
 }
@@ -50,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return false;
     }
 
-    const session = { name: foundUser.name, email: foundUser.email, id: foundUser.email };
+    const session = { name: foundUser.name, email: foundUser.email,};
     localStorage.setItem("currentUser", JSON.stringify(session));
     setUser(session);
     return true;

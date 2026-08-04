@@ -19,7 +19,7 @@ function Login() {
     const success = login(email, password);
 
     if (success) {
-      navigate("/dashboard");
+      navigate("/");
     } else {
       alert("Login failed. Please check your credentials.");
     }
