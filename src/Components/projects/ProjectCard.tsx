@@ -3,10 +3,14 @@ import type { Project } from "../../types/project";
 
 interface ProjectCardProps {
     project: Project;
+    onEdit: () => void;
+    onDelete: () => void;
 }
 
 export default function ProjectCard({
     project,
+    onEdit,
+    onDelete
 }: ProjectCardProps) {
   return (
     <div className="card hover:-translate-y-1 transition-all duration-300 hover:shadow-xl">
@@ -22,7 +26,7 @@ export default function ProjectCard({
         </div>
 
         <span className="rounded-full bg-indigo-100 px-3 py-1 text-sm font-medium text-indigo-700">
-            {project.progress}
+            {project.progress}%
         </span>
       </div>
 
@@ -55,11 +59,15 @@ export default function ProjectCard({
             <Eye size={18} />
           </button>
 
-          <button className="rounded-lg p-2 hover:bg-slate-100">
+                  <button
+                      onClick={onEdit}
+                      className="rounded-lg p-2 hover:bg-slate-100">
             <Pencil size={18} />
           </button>
 
-          <button className="rounded-lg p-2 text-red-500 hover:bg-red-50">
+                  <button
+                        onClick={onDelete}
+                      className="rounded-lg p-2 text-red-500 hover:bg-red-50">
             <Trash2 size={18} />
           </button>
         </div>

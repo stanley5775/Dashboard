@@ -1,27 +1,30 @@
 import { useState } from "react";
+import type { Project } from "../../types/project";
 
 interface ProjectFormProps {
   onClose: () => void;
-  onSave: (project: any) => void;
+    onSave: (project: Project) => void;
+    project?: Project;
 }
 
-export default function ProjectForm({ onClose, onSave }: ProjectFormProps) {
-  const [form, setForm] = useState({
-    name: "",
-    description: "",
-    status: "Planning",
-    priority: "Medium",
-    progress: 0,
-    dueDate: "",
-  });
+export default function ProjectForm({ onClose, onSave, project }: ProjectFormProps) {
+const [form, setForm] = useState({
+  name: project?.name || "",
+  description: project?.description || "",
+  status: project?.status || "Planning",
+  priority: project?.priority || "Medium",
+  progress: project?.progress || 0,
+  dueDate: project?.dueDate || "",
+});
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     onSave({
-      id: crypto.randomUUID(),
+      id: project?.id || crypto.randomUUID(),
       ...form,
-      createdAt: new Date().toLocaleDateString(),
+        createdAt:
+            project?.createdAt || new Date().toLocaleDateString(),
     });
 
     onClose();
@@ -30,7 +33,9 @@ export default function ProjectForm({ onClose, onSave }: ProjectFormProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="w-full max-w-xl rounded-2xl bg-white p-6 shadow-2xl">
-        <h2 className="mb-6 text-2xl font-bold">Create Project</h2>
+        <h2 className="mb-6 text-2xl font-bold">
+          {project ? "Edit Project" : "Create Project"}
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <input
@@ -64,7 +69,7 @@ export default function ProjectForm({ onClose, onSave }: ProjectFormProps) {
               onChange={(e) =>
                 setForm({
                   ...form,
-                  status: e.target.value,
+                  status: e.target.value as "Planning" | "In Progress" | "Completed",
                 })
               }
             >
@@ -79,13 +84,13 @@ export default function ProjectForm({ onClose, onSave }: ProjectFormProps) {
               onChange={(e) =>
                 setForm({
                   ...form,
-                  priority: e.target.value,
+                  priority: e.target.value as "Low" | "Medium" | "High",
                 })
               }
             >
               <option>Low</option>
               <option>Medium</option>
-              <option>High</option>
+              <option>High</option> 
             </select>
           </div>
 
@@ -125,7 +130,7 @@ export default function ProjectForm({ onClose, onSave }: ProjectFormProps) {
             </button>
 
             <button type="submit" className="btn-primary">
-              Save Project
+                {project ? "Save Changes" : "Create Project"}
             </button>
           </div>
         </form>

@@ -2,6 +2,8 @@ import { Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import ProjectCard from "../../components/projects/ProjectCard";
 import ProjectForm from "../../components/projects/ProjectForm";
+import type { Project } from "../../types/project";
+import DeleteProjectModal from "../../components/projects/DeleteProjectmodal";
 
 export default function Projects() {
 
@@ -15,16 +17,42 @@ export default function Projects() {
     setProjects(saved);
   }, []);
 
-  function handleSave(project: any) {
-    const updated = [...projects, project];
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [deletingProject, setDeletingProject] = useState<Project | null>(null);
+
+  function handleDelete() {
+    if (!deletingProject) return;
+
+    const updated = projects.filter(
+      (project) => project.id !== deletingProject.id,
+    );
 
     setProjects(updated);
 
-    localStorage.setItem(
-      "projects",
-      JSON.stringify(updated)
-    );
+    localStorage.setItem("projects", JSON.stringify(updated));
+
+    setDeletingProject(null);
   }
+
+function handleSave(project: Project) {
+  let updated: Project[];
+
+  const exists = projects.some((p) => p.id === project.id);
+
+  if (exists) {
+    updated = projects.map((p) => (p.id === project.id ? project : p));
+  } else {
+    updated = [...projects, project];
+  }
+
+  setProjects(updated);
+
+  localStorage.setItem("projects", JSON.stringify(updated));
+
+  setEditingProject(null);
+
+  setShowModal(false);
+}
 
   return (
     <>
@@ -40,7 +68,8 @@ export default function Projects() {
 
           <button
             onClick={() => setShowModal(true)}
-            className="btn-primary flex items-center gap-2">
+            className="btn-primary flex items-center gap-2"
+          >
             <Plus size={20} />
             New Project
           </button>
@@ -60,7 +89,6 @@ export default function Projects() {
         {/* Cards */}
 
         <div className="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-
           {projects.length === 0 ? (
             <div className="col-span-full rounded-xl border-2 border-dashed border-slate-300 p-12 text-center">
               <h3>No projects yet</h3>
@@ -71,17 +99,33 @@ export default function Projects() {
               <ProjectCard
                 key={project.id}
                 project={project}
+                onEdit={() => {
+                  setEditingProject(project);
+                  setShowModal(true);
+                }}
+                onDelete={() => setDeletingProject(project)}
               />
             ))
           )}
-
         </div>
       </div>
 
       {showModal && (
         <ProjectForm
-          onClose={() => setShowModal(false)}
+          project={editingProject || undefined}
+          onClose={() => {
+            setShowModal(false);
+            setEditingProject(null);
+          }}
           onSave={handleSave}
+        />
+      )}
+
+      {deletingProject && (
+        <DeleteProjectModal
+          project={deletingProject}
+          onClose={() => setDeletingProject(null)}
+          onConfirm={handleDelete}
         />
       )}
     </>
