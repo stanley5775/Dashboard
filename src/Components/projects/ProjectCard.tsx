@@ -1,21 +1,28 @@
 import { CalendarDays, Pencil, Trash2, Eye } from "lucide-react";
+import type { Project } from "../../types/project";
 
-export default function ProjectCard() {
+interface ProjectCardProps {
+    project: Project;
+}
+
+export default function ProjectCard({
+    project,
+}: ProjectCardProps) {
   return (
     <div className="card hover:-translate-y-1 transition-all duration-300 hover:shadow-xl">
       {/* Header */}
 
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="text-xl font-bold">Website Redesign</h3>
+          <h3 className="text-xl font-bold">{project.name}</h3>
 
           <p className="mt-2">
-            Redesign the company website with a modern responsive interface.
+            {project.description}
           </p>
         </div>
 
         <span className="rounded-full bg-indigo-100 px-3 py-1 text-sm font-medium text-indigo-700">
-          In Progress
+            {project.progress}
         </span>
       </div>
 
@@ -23,13 +30,15 @@ export default function ProjectCard() {
 
       <div className="mt-6">
         <div className="flex justify-between mb-2">
-          <span className="text-sm">Progress</span>
+          <span className="text-sm">{project.status}</span>
 
-          <span className="text-sm font-semibold">75%</span>
+                  <span className="text-sm font-semibold">{project.createdAt}</span>
         </div>
 
         <div className="h-3 rounded-full bg-slate-200">
-          <div className="h-3 w-3/4 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600"></div>
+                  <div
+                      style={{ width: `${project.progress}%` }}
+                      className="h-3 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600"></div>
         </div>
       </div>
 
