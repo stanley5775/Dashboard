@@ -4,24 +4,26 @@ import type { Project } from "../../types/project";
 
 interface TaskFormProps {
   onClose: () => void;
-  onSave: (task: Task) => void;
+    onSave: (task: Task) => void;
+    task?: Task;
 }
 
 export default function TaskForm({
   onClose,
-  onSave,
+    onSave,
+  task,
 }: TaskFormProps) {
   const [projects, setProjects] = useState<Project[]>([]);
 
-  const [form, setForm] = useState({
-    projectId: "",
-    title: "",
-    description: "",
-    priority: "Medium" as Task["priority"],
-    assignedUser: "",
-    dueDate: "",
-    status: "Todo" as Task["status"],
-  });
+const [form, setForm] = useState({
+  projectId: task?.projectId || "",
+  title: task?.title || "",
+  description: task?.description || "",
+  priority: task?.priority || "Medium",
+  assignedUser: task?.assignedUser || "",
+  dueDate: task?.dueDate || "",
+  status: task?.status || "Todo",
+});
 
   useEffect(() => {
     const savedProjects: Project[] = JSON.parse(
@@ -42,9 +44,9 @@ export default function TaskForm({
     e.preventDefault();
 
     onSave({
-      id: crypto.randomUUID(),
+      id: task?.id || crypto.randomUUID(),
       ...form,
-      createdAt: new Date().toLocaleDateString(),
+      createdAt: task?.createdAt || new Date().toLocaleDateString(),
     });
 
     onClose();
@@ -53,7 +55,7 @@ export default function TaskForm({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="w-full max-w-2xl rounded-2xl bg-white p-6">
-        <h2 className="mb-6 text-2xl font-bold">Create Task</h2>
+              <h2 className="mb-6 text-2xl font-bold">{task ? "Edit Task" : "Create Task" }</h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <select
@@ -152,7 +154,7 @@ export default function TaskForm({
             </button>
 
             <button type="submit" className="btn-primary">
-              Create Task
+              {task ? "Save Changes" : "Create Task"}
             </button>
           </div>
         </form>

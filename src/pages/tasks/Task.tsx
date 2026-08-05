@@ -3,25 +3,66 @@ import TaskCard from "../../components/tasks/TaskCard";
 import TaskForm from "../../components/tasks/TaskForm";
 import { useEffect, useState } from "react";
 import type { Task } from "../../types/task"
+import type { Project } from "../../types/project";
+import DeleteTaskModal from "../../components/tasks/DeleteTaskModal";
 
 export default function Tasks() {
 
   const [showModal, setShowModal] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [search, setSearch] = useState("");
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [selectedProject, setSelectedProject] = useState("");
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [deletingTask, setDeletingTask] = useState<Task | null>(null);
 
   useEffect(() => {
     const savedTasks: Task[] = JSON.parse(localStorage.getItem("tasks") || "[]");
+    const savedProjects = JSON.parse(localStorage.getItem("projects") || "[]");
 
     setTasks(savedTasks);
+    setProjects(savedProjects);
   }, [])
 
-  function handleSave(task: Task) {
-    const updated = [...tasks, task];
+function handleSave(task: Task) {
+  let updated: Task[];
+
+  const exists = tasks.some((t) => t.id === task.id);
+
+  if (exists) {
+    updated = tasks.map((t) => (t.id === task.id ? task : t));
+  } else {
+    updated = [...tasks, task];
+  }
+
+  setTasks(updated);
+
+  localStorage.setItem("tasks", JSON.stringify(updated));
+
+  setEditingTask(null);
+  setShowModal(false);
+  }
+  
+  function handleDelete() {
+    if (!deletingTask) return;
+
+    const updated = tasks.filter((task) => task.id !== deletingTask.id);
 
     setTasks(updated);
 
-    localStorage.setItem("tasks", JSON.stringify(updated)
+    localStorage.setItem("tasks", JSON.stringify(updated));
+
+    setDeletingTask(null);
+  }
+
+  function handleStatusChange(taskId: string, status: Task["status"]) {
+    const updated = tasks.map((task) =>
+      task.id === taskId ? { ...task, status } : task,
     );
+
+    setTasks(updated);
+
+    localStorage.setItem("tasks", JSON.stringify(updated));
   }
 
   return (
@@ -55,11 +96,26 @@ export default function Tasks() {
             className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
           />
 
-          <input placeholder="Search tasks..." className="pl-11" />
+          <input
+            placeholder="Search tasks..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-11"
+          />
         </div>
 
-        <select className="rounded-xl border border-slate-300 bg-white px-4 py-3">
-          <option>All Projects</option>
+        <select
+          value={selectedProject}
+          onChange={(e) => setSelectedProject(e.target.value)}
+          className="rounded-xl border border-slate-300 p-3"
+        >
+          <option value="">All Projects</option>
+
+          {projects.map((project) => (
+            <option key={project.id} value={project.id}>
+              {project.name}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -75,16 +131,53 @@ export default function Tasks() {
             </p>
           </div>
         ) : (
-          tasks.map((task) => <TaskCard key={task.id} task={task} />)
+          tasks
+            .filter((task) => {
+              const matchesSearch = task.title
+                .toLowerCase()
+                .includes(search.toLowerCase());
+
+              const matchesProject =
+                !selectedProject || task.projectId === selectedProject;
+
+              return matchesSearch && matchesProject;
+            })
+            .map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onEdit={() => {
+                  setEditingTask(task);
+                  setShowModal(true);
+                }}
+                onDelete={() => setDeletingTask(task)}
+                onStatusChange={(status) =>
+                  handleStatusChange(task.id, status)
+                }
+              />
+            ))
         )}
       </div>
 
       {showModal && (
-        <TaskForm onClose={() => setShowModal(false)}
-        onSave={handleSave} />
+        <TaskForm
+          task={editingTask || undefined}
+          onClose={() => {
+            setShowModal(false);
+            setEditingTask(null);
+          }}
+          onSave={handleSave}
+        />
+      )}
+
+      {deletingTask && (
+        <DeleteTaskModal
+          task={deletingTask}
+          onClose={() => setDeletingTask(null)}
+          onConfirm={handleDelete}
+        />
       )}
 
     </div>
-
   );
 }

@@ -7,6 +7,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Projects from "./pages/projects/Projects";
 import ProjectDetails from "./pages/projects/ProjectDetails";
 import Tasks from "./pages/tasks/Task";
+import TaskDetails from "./pages/tasks/TaskDetails";
 import NotFound from "./pages/errors/NotFound";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/projects" element={<Projects />} />
         <Route path="/projects/:id" element={<ProjectDetails />} />
         <Route path="/tasks" element={<Tasks />} />
+        <Route path="/tasks/:id" element={<TaskDetails />} />
       </Route>
 
 
