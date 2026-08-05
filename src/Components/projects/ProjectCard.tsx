@@ -1,4 +1,5 @@
 import { CalendarDays, Pencil, Trash2, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import type { Project } from "../../types/project";
 
 interface ProjectCardProps {
@@ -12,6 +13,9 @@ export default function ProjectCard({
     onEdit,
     onDelete
 }: ProjectCardProps) {
+
+    const navigate = useNavigate();
+
   return (
     <div className="card hover:-translate-y-1 transition-all duration-300 hover:shadow-xl">
       {/* Header */}
@@ -55,7 +59,9 @@ export default function ProjectCard({
         </div>
 
         <div className="flex gap-2">
-          <button className="rounded-lg p-2 hover:bg-slate-100">
+                  <button
+                      onClick={() => navigate(`/projects/${project.id}`)}
+                      className="rounded-lg p-2 hover:bg-slate-100">
             <Eye size={18} />
           </button>
 

@@ -8,9 +8,10 @@ interface NavbarProps {
 export default function Navbar({ onMenuClick }: NavbarProps) {
   const { user } = useAuth();
 
+
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur-md">
-      <div className="flex h-16 items-center justify-between px-4 lg:px-8">
+      <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left */}
 
         <div className="flex items-center gap-4">
@@ -21,14 +22,22 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
             <Menu size={22} />
           </button>
 
-          <div className="relative hidden md:block">
+          <div className="hidden md:block relative">
             <Search
               size={18}
               className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
             />
 
-            <input type="text" placeholder="Search..." className="w-72 pl-10" />
+            <input
+              type="text"
+              placeholder="Search..."
+              className="w-64 lg:w-80 pl-10"
+            />
           </div>
+
+          <button className="rounded-lg p-2 hover:bg-slate-100 md:hidden">
+            <Search size={20} />
+          </button>
         </div>
 
         {/* Right */}
@@ -44,7 +53,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
 
           {/* User */}
 
-          <button className="flex items-center gap-3 rounded-xl px-2 py-1 hover:bg-slate-100">
+          <button className="flex items-center gap-2 rounded-xl px-2 py-1 transition-colors hover:bg-slate-100">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 font-bold text-white">
               {user?.name.charAt(0).toUpperCase()}
             </div>
@@ -55,7 +64,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
               <p className="text-xs text-slate-500">{user?.email}</p>
             </div>
 
-            <ChevronDown size={18} />
+            <ChevronDown size={16} />
           </button>
         </div>
       </div>

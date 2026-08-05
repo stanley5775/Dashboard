@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Projects from "./pages/projects/Projects";
 import ProjectDetails from "./pages/projects/ProjectDetails";
+import Tasks from "./pages/tasks/Task";
 import NotFound from "./pages/errors/NotFound";
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+
       <Route
         path="/"
         element={
@@ -22,9 +24,12 @@ function App() {
         }
       >
         <Route index element={<Dashboard />} />
-        <Route path="projects" element={<Projects />} />
-        <Route path="projects/:id" element={<ProjectDetails />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/projects/:id" element={<ProjectDetails />} />
+        <Route path="/tasks" element={<Tasks />} />
       </Route>
+
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

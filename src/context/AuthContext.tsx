@@ -14,6 +14,7 @@ interface RegisterData {
 
 interface AuthContextType {
   user: User | null;
+  loading: boolean;
   login: (email: string, password: string) => boolean;
   register: (user: RegisterData) => boolean;
   logout: () => void;
@@ -23,12 +24,14 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const session = localStorage.getItem("currentUser");
     if (session) {
       setUser(JSON.parse(session));
     }
+    setLoading(false);
   }, []);
 
   function register(newUser: RegisterData) {
@@ -61,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
