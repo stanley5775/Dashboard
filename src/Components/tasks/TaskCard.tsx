@@ -6,23 +6,30 @@ import {
   FolderKanban,
   User,
 } from "lucide-react";
+import type { Task } from "../../types/task"
 
-export default function TaskCard() {
+interface TaskCardProps {
+  task: Task;
+}
+
+export default function TaskCard({
+  task,
+}: TaskCardProps) {
   return (
     <div className="card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       {/* Header */}
 
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="text-lg font-bold">Design Login Screen</h3>
+          <h3 className="text-lg font-bold">{task.title}</h3>
 
           <p className="mt-2 text-slate-600">
-            Create a modern login interface using React and Tailwind CSS.
+            {task.description}
           </p>
         </div>
 
         <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
-          Todo
+          {task.status}
         </span>
       </div>
 
@@ -31,22 +38,22 @@ export default function TaskCard() {
       <div className="mt-6 space-y-3">
         <div className="flex items-center gap-2 text-sm text-slate-600">
           <FolderKanban size={16} />
-          Website Redesign
+          {task.projectId}
         </div>
 
         <div className="flex items-center gap-2 text-sm text-slate-600">
           <User size={16} />
-          Stanley
+          {task.assignedUser}
         </div>
 
         <div className="flex items-center gap-2 text-sm text-slate-600">
           <CalendarDays size={16} />
-          15 Aug 2026
+          {task.dueDate}
         </div>
 
         <div>
           <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-600">
-            High Priority
+            {task.priority}
           </span>
         </div>
       </div>
