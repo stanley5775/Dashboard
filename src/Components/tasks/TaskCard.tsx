@@ -90,7 +90,7 @@ export default function TaskCard({
         </div>
 
         <div>
-          <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-600">
+          <span className={`rounded-full px-3 py-1 text-xs font-semibold ${priorityColor()}`}>
             {task.priority}
           </span>
         </div>
@@ -99,9 +99,16 @@ export default function TaskCard({
       {/* Actions */}
 
       <div className="mt-6 flex justify-end gap-2">
-        <button onClick={() =>
-          navigate(`/tasks/${task.id}`)
-        } className="rounded-lg p-2 hover:bg-slate-100">
+        <button
+          onClick={() => {
+            if (onView) {
+              onView();
+            } else {
+              navigate(`/tasks/${task.id}`);
+            }
+          }}
+          className="rounded-lg p-2 hover:bg-slate-100"
+        >
           <Eye size={18} />
         </button>
 

@@ -8,6 +8,7 @@ import Projects from "./pages/projects/Projects";
 import ProjectDetails from "./pages/projects/ProjectDetails";
 import Tasks from "./pages/tasks/Task";
 import TaskDetails from "./pages/tasks/TaskDetails";
+import Users from "./pages/users/Users";
 import NotFound from "./pages/errors/NotFound";
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <Route path="/projects/:id" element={<ProjectDetails />} />
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/tasks/:id" element={<TaskDetails />} />
+        <Route path="/users" element={<Users />} />
       </Route>
 
 

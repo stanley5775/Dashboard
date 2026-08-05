@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Task } from "../../types/task";
 import type { Project } from "../../types/project";
+import { useUsers } from "../../hooks/useUsers";
 
 interface TaskFormProps {
   onClose: () => void;
@@ -10,16 +11,19 @@ interface TaskFormProps {
 
 export default function TaskForm({
   onClose,
-    onSave,
+  onSave,
   task,
 }: TaskFormProps) {
   const [projects, setProjects] = useState<Project[]>([]);
+  const { users, loading, error, retry,
+  } = useUsers();
 
 const [form, setForm] = useState({
   projectId: task?.projectId || "",
   title: task?.title || "",
   description: task?.description || "",
   priority: task?.priority || "Medium",
+  assignedUserId: task?.assignedUserId ?? "",
   assignedUser: task?.assignedUser || "",
   dueDate: task?.dueDate || "",
   status: task?.status || "Todo",
@@ -46,6 +50,10 @@ const [form, setForm] = useState({
     onSave({
       id: task?.id || crypto.randomUUID(),
       ...form,
+      assignedUserId:
+        typeof form.assignedUserId === "string"
+          ? Number(form.assignedUserId)
+          : form.assignedUserId,
       createdAt: task?.createdAt || new Date().toLocaleDateString(),
     });
 
@@ -55,7 +63,9 @@ const [form, setForm] = useState({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="w-full max-w-2xl rounded-2xl bg-white p-6">
-              <h2 className="mb-6 text-2xl font-bold">{task ? "Edit Task" : "Create Task" }</h2>
+        <h2 className="mb-6 text-2xl font-bold">
+          {task ? "Edit Task" : "Create Task"}
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <select
@@ -112,16 +122,47 @@ const [form, setForm] = useState({
             <option>High</option>
           </select>
 
-          <input
-            placeholder="Assigned User"
-            value={form.assignedUser}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                assignedUser: e.target.value,
-              })
-            }
-          />
+          <div>
+            <label className="mb-2 block font-medium">Assigned User</label>
+
+            {loading ? (
+              <p className="text-slate-500">Loading users...</p>
+            ) : error ? (
+              <div className="space-y-3">
+                <p className="text-red-500">{error}</p>
+
+                <button type="button" onClick={retry} className="btn-secondary">
+                  Retry
+                </button>
+              </div>
+            ) : (
+              <select
+                value={form.assignedUserId}
+                onChange={(e) => {
+                  const user = users.find(
+                    (u) => u.id === Number(e.target.value),
+                  );
+
+                  if (!user) return;
+
+                  setForm({
+                    ...form,
+                    assignedUserId: user.id,
+                    assignedUser: `${user.firstName} ${user.lastName}`,
+                  });
+                }}
+                className="w-full rounded-xl border border-slate-300 p-3"
+              >
+                <option value="">Select a team member</option>
+
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.firstName} {user.lastName}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
 
           <input
             type="date"

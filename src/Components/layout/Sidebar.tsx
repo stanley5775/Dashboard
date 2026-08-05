@@ -5,7 +5,8 @@ import {
   BarChart3,
   CheckSquare,
   LogOut,
-  X
+  X,
+  Users,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
@@ -51,7 +52,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-
         {/* Logo */}
 
         <div className="flex items-start justify-between border-b border-slate-800 px-5 py-4">
@@ -61,7 +61,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             </div>
 
             <div>
-              <h2 className="text-lg text-font-bold text-white lg:text-xl">Project</h2>
+              <h2 className="text-lg text-font-bold text-white lg:text-xl">
+                Project
+              </h2>
 
               <p className="text-sm text-slate-400">Management Dashboard</p>
             </div>
@@ -104,6 +106,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           <NavLink to="/tasks" className={linkClass} onClick={handleNavClick}>
             <CheckSquare size={20} />
             Tasks
+          </NavLink>
+
+          <NavLink to="/users" className={linkClass} onClick={handleNavClick}>
+            <Users size={20} />
+            <span>Users</span>
           </NavLink>
         </nav>
 

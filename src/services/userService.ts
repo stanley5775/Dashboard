@@ -1,6 +1,6 @@
 import type { User, UsersResponse } from "../types/user";
 
-const BASE_URL = "https://dummyjson.com/Users";
+const BASE_URL = "https://dummyjson.com";
 
 export async function fetchUsers(): Promise<User[]> {
   const response = await fetch(`${BASE_URL}/users`);
