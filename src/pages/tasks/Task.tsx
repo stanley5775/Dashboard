@@ -2,67 +2,55 @@ import { Plus, Search } from "lucide-react";
 import TaskCard from "../../components/tasks/TaskCard";
 import TaskForm from "../../components/tasks/TaskForm";
 import { useEffect, useState } from "react";
-import type { Task } from "../../types/task"
+import type { Task } from "../../types/task";
 import type { Project } from "../../types/project";
 import DeleteTaskModal from "../../components/tasks/DeleteTaskModal";
+import { useTasks } from "../../context/TaskContext";
 
 export default function Tasks() {
-
   const [showModal, setShowModal] = useState(false);
-  const [tasks, setTasks] = useState<Task[]>([]);
+
   const [search, setSearch] = useState("");
+
   const [projects, setProjects] = useState<Project[]>([]);
+
   const [selectedProject, setSelectedProject] = useState("");
+
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+
   const [deletingTask, setDeletingTask] = useState<Task | null>(null);
 
+  // Shared task state from Context
+  const { tasks, addTask, updateTask, deleteTask, updateTaskStatus } =
+    useTasks();
+
+  // Load projects only
   useEffect(() => {
-    const savedTasks: Task[] = JSON.parse(localStorage.getItem("tasks") || "[]");
     const savedProjects = JSON.parse(localStorage.getItem("projects") || "[]");
 
-    setTasks(savedTasks);
     setProjects(savedProjects);
-  }, [])
+  }, []);
 
-function handleSave(task: Task) {
-  let updated: Task[];
+  function handleSave(task: Task) {
+    const exists = tasks.some((t) => t.id === task.id);
 
-  const exists = tasks.some((t) => t.id === task.id);
+    if (exists) {
+      updateTask(task);
+    } else {
+      addTask(task);
+    }
 
-  if (exists) {
-    updated = tasks.map((t) => (t.id === task.id ? task : t));
-  } else {
-    updated = [...tasks, task];
+    setEditingTask(null);
+
+    setShowModal(false);
   }
 
-  setTasks(updated);
-
-  localStorage.setItem("tasks", JSON.stringify(updated));
-
-  setEditingTask(null);
-  setShowModal(false);
-  }
-  
   function handleDelete() {
     if (!deletingTask) return;
 
-    const updated = tasks.filter((task) => task.id !== deletingTask.id);
-
-    setTasks(updated);
-
-    localStorage.setItem("tasks", JSON.stringify(updated));
+    deleteTask(deletingTask.id);
 
     setDeletingTask(null);
-  }
-
-  function handleStatusChange(taskId: string, status: Task["status"]) {
-    const updated = tasks.map((task) =>
-      task.id === taskId ? { ...task, status } : task,
-    );
-
-    setTasks(updated);
-
-    localStorage.setItem("tasks", JSON.stringify(updated));
   }
 
   return (
@@ -132,6 +120,7 @@ function handleSave(task: Task) {
           </div>
         ) : (
           tasks
+
             .filter((task) => {
               const matchesSearch = task.title
                 .toLowerCase()
@@ -142,18 +131,18 @@ function handleSave(task: Task) {
 
               return matchesSearch && matchesProject;
             })
+
             .map((task) => (
               <TaskCard
                 key={task.id}
                 task={task}
                 onEdit={() => {
                   setEditingTask(task);
+
                   setShowModal(true);
                 }}
                 onDelete={() => setDeletingTask(task)}
-                onStatusChange={(status) =>
-                  handleStatusChange(task.id, status)
-                }
+                onStatusChange={(status) => updateTaskStatus(task.id, status)}
               />
             ))
         )}
@@ -164,6 +153,7 @@ function handleSave(task: Task) {
           task={editingTask || undefined}
           onClose={() => {
             setShowModal(false);
+
             setEditingTask(null);
           }}
           onSave={handleSave}
@@ -177,7 +167,6 @@ function handleSave(task: Task) {
           onConfirm={handleDelete}
         />
       )}
-
     </div>
   );
 }

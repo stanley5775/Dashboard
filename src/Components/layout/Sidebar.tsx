@@ -7,6 +7,7 @@ import {
   LogOut,
   X,
   Users,
+  Kanban,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
@@ -111,6 +112,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           <NavLink to="/users" className={linkClass} onClick={handleNavClick}>
             <Users size={20} />
             <span>Users</span>
+          </NavLink>
+
+          <NavLink to="/kanban" className={linkClass} onClick={handleNavClick}>
+            <Kanban size={20} />
+            <span>Kanbanboard</span>
           </NavLink>
         </nav>
 
