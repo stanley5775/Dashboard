@@ -1,9 +1,9 @@
 import { Plus, Search } from "lucide-react";
 import { useState } from "react";
 
-import ProjectCard from "../../components/projects/ProjectCard";
-import ProjectForm from "../../components/projects/ProjectForm";
-import DeleteProjectModal from "../../components/projects/DeleteProjectmodal";
+import ProjectCard from "../../Components/projects/ProjectCard";
+import ProjectForm from "../../Components/projects/ProjectForm";
+import DeleteProjectModal from "../../Components/projects/DeleteProjectmodal";
 
 import type { Project } from "../../types/project";
 

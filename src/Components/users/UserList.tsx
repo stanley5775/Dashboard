@@ -1,4 +1,4 @@
-import UserCard from "./UserCard";
+import UserCard from "../../Components/users/UserCard";
 import type { User } from "../../types/user";
 
 interface UserListProps {

@@ -1,5 +1,5 @@
 import { useTasks } from "../../context/TaskContext";
-import TaskCompletionChart from "./TaskCompletionChart";
+import TaskCompletionChart from "../../Components/dashboard/TaskCompletionChart";
 
 export default function ChartSection() {
   const { tasks } = useTasks();

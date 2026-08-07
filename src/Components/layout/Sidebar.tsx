@@ -2,7 +2,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   FolderKanban,
-  BarChart3,
   CheckSquare,
   LogOut,
   X,

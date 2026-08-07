@@ -1,6 +1,6 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 
-import TaskCard from "./TaskCard";
+import TaskCard from "../../Components/tasks/TaskCard";
 
 import type { Task } from "../../types/task";
 

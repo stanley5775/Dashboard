@@ -1,8 +1,8 @@
-import WelcomeCard from "../../components/dashboard/WelcomeCard";
-import StatsGrid from "../../components/dashboard/StatsGrid";
-import ChartSection from "../../components/dashboard/ChartSection";
-import RecentProjects from "../../components/dashboard/RecentProjects";
-import RecentTasks from "../../components/dashboard/RecentTasks";
+import WelcomeCard from "../../Components/dashboard/WelcomeCard";
+import StatsGrid from "../../Components/dashboard/StatsGrid";
+import ChartSection from "../../Components/dashboard/ChartSection";
+import RecentProjects from "../../Components/dashboard/RecentProjects";
+import RecentTasks from "../../Components/dashboard/RecentTasks";
 import { useTasks } from "../../context/TaskContext";
 import { useProjects } from "../../context/ProjectContext";
 

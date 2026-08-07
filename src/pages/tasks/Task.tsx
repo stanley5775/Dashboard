@@ -1,9 +1,9 @@
 import { Plus, Search } from "lucide-react";
 import { useState } from "react";
 
-import TaskCard from "../../components/tasks/TaskCard";
-import TaskForm from "../../components/tasks/TaskForm";
-import DeleteTaskModal from "../../components/tasks/DeleteTaskModal";
+import TaskCard from "../../Components/tasks/TaskCard";
+import TaskForm from "../../Components/tasks/TaskForm";
+import DeleteTaskModal from "../../Components/tasks/DeleteTaskModal";
 
 import type { Task } from "../../types/task";
 

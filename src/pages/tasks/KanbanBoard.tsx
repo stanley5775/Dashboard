@@ -6,7 +6,7 @@ import type { DropResult } from "@hello-pangea/dnd";
 
 import type { Task } from "../../types/task";
 
-import KanbanColumn from "../../components/tasks/KanbanColumn";
+import KanbanColumn from "../../Components/tasks/KanbanColumn";
 
 import { useTasks } from "../../context/TaskContext";
 

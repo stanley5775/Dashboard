@@ -1,9 +1,9 @@
 import { Search } from "lucide-react";
 import { useUsers } from "../../hooks/useUsers";
-import LoadingSpinner from "../../components/common/LoadingSpinner";
-import UserList from "../../components/users/UserList";
-import ErrorState from "../../components/common/ErrorState";
-import EmptyState from "../../components/common/EmptyState";
+import LoadingSpinner from "../../Components/common/LoadingSpinner";
+import UserList from "../../Components/users/UserList";
+import ErrorState from "../../Components/common/ErrorState";
+import EmptyState from "../../Components/common/EmptyState";
 import { useState } from "react";
 
 
