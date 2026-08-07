@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 import type { Task } from "../types/task";
+import { useAuth } from "./AuthContext";
 
 interface TaskContextType {
   tasks: Task[];
@@ -17,41 +18,79 @@ interface TaskContextType {
 const TaskContext = createContext<TaskContextType | null>(null);
 
 export function TaskProvider({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
+
   const [tasks, setTasks] = useState<Task[]>([]);
 
   /*
-Load tasks once
-*/
-
+   * Load tasks whenever the logged-in user changes.
+   */
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("tasks") || "[]");
+    if (!user) {
+      setTasks([]);
+      return;
+    }
 
-    setTasks(saved);
-  }, []);
+    const taskKey = `tasks_${user.email}`;
+
+    const savedTasks = localStorage.getItem(taskKey);
+
+    if (!savedTasks) {
+      setTasks([]);
+      return;
+    }
+
+    try {
+      setTasks(JSON.parse(savedTasks));
+    } catch (error) {
+      console.error("Failed to load tasks:", error);
+
+      setTasks([]);
+    }
+  }, [user]);
 
   /*
-Save whenever tasks changes
-*/
-
+   * Save tasks for the CURRENT user.
+   */
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
+    if (!user) return;
 
+    const taskKey = `tasks_${user.email}`;
+
+    localStorage.setItem(taskKey, JSON.stringify(tasks));
+  }, [tasks, user]);
+
+  /*
+   * Add task
+   */
   function addTask(task: Task) {
-    setTasks((prev) => [...prev, task]);
+    setTasks((prevTasks) => [...prevTasks, task]);
   }
 
+  /*
+   * Update task
+   */
   function updateTask(task: Task) {
-    setTasks((prev) => prev.map((item) => (item.id === task.id ? task : item)));
+    setTasks((prevTasks) =>
+      prevTasks.map((existingTask) =>
+        existingTask.id === task.id ? task : existingTask,
+      ),
+    );
   }
 
+  /*
+   * Delete task
+   */
   function deleteTask(id: string) {
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
   }
 
+  /*
+   * Change task status
+   */
   function updateTaskStatus(id: string, status: Task["status"]) {
-    setTasks((prev) =>
-      prev.map((task) =>
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
         task.id === id
           ? {
               ...task,
@@ -81,7 +120,7 @@ export function useTasks() {
   const context = useContext(TaskContext);
 
   if (!context) {
-    throw new Error(" useTasks must be used inside TaskProvider");
+    throw new Error("useTasks must be used inside TaskProvider");
   }
 
   return context;

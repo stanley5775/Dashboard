@@ -87,15 +87,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           </NavLink>
 
           <NavLink
-            to="/analytics"
-            className={linkClass}
-            onClick={handleNavClick}
-          >
-            <BarChart3 size={20} />
-            Analytics
-          </NavLink>
-
-          <NavLink
             to="/projects"
             className={linkClass}
             onClick={handleNavClick}

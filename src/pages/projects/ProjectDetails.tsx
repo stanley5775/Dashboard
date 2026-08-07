@@ -1,21 +1,29 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { CalendarDays, Flag, ArrowLeft, BarChart3 } from "lucide-react";
-import type { Project } from "../../types/project";
+
+import { useProjects } from "../../context/ProjectContext";
 
 export default function ProjectDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const projects: Project[] = JSON.parse(
-    localStorage.getItem("projects") || "[]",
-  );
+  const { projects } = useProjects();
 
   const project = projects.find((p) => p.id === id);
 
   if (!project) {
     return (
       <div className="page flex items-center justify-center">
-        <h2>Project not found.</h2>
+        <div className="text-center">
+          <h2 className="text-xl font-semibold">Project not found.</h2>
+
+          <button
+            onClick={() => navigate("/projects")}
+            className="mt-4 text-indigo-600 hover:underline"
+          >
+            Back to Projects
+          </button>
+        </div>
       </div>
     );
   }

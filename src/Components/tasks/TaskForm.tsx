@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Task } from "../../types/task";
-import type { Project } from "../../types/project";
 import { useUsers } from "../../hooks/useUsers";
+import { useProjects } from "../../context/ProjectContext";
 
 interface TaskFormProps {
   onClose: () => void;
@@ -14,7 +14,8 @@ export default function TaskForm({
   onSave,
   task,
 }: TaskFormProps) {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const { projects } = useProjects();
+  
   const { users, loading, error, retry,
   } = useUsers();
 
@@ -28,21 +29,6 @@ const [form, setForm] = useState({
   dueDate: task?.dueDate || "",
   status: task?.status || "Todo",
 });
-
-  useEffect(() => {
-    const savedProjects: Project[] = JSON.parse(
-      localStorage.getItem("projects") || "[]"
-    );
-
-    setProjects(savedProjects);
-
-    if (savedProjects.length > 0) {
-      setForm((prev) => ({
-        ...prev,
-        projectId: savedProjects[0].id,
-      }));
-    }
-  }, []);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

@@ -1,114 +1,180 @@
 import { Plus, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
 import ProjectCard from "../../components/projects/ProjectCard";
 import ProjectForm from "../../components/projects/ProjectForm";
-import type { Project } from "../../types/project";
 import DeleteProjectModal from "../../components/projects/DeleteProjectmodal";
 
+import type { Project } from "../../types/project";
+
+import { useProjects } from "../../context/ProjectContext";
+
 export default function Projects() {
+  /*
+   * Get project data and actions
+   * from ProjectContext.
+   */
+  const { projects, addProject, updateProject, deleteProject } = useProjects();
 
+  /*
+   * UI state.
+   */
   const [showModal, setShowModal] = useState(false);
-  const [projects, setProjects] = useState<any[]>([]);
 
-  useEffect(() => {
-    const saved =
-      JSON.parse(localStorage.getItem("projects") || "[]");
-    
-    setProjects(saved);
-  }, []);
+  const [search, setSearch] = useState("");
 
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+
   const [deletingProject, setDeletingProject] = useState<Project | null>(null);
 
-  function handleDelete() {
-    if (!deletingProject) return;
-
-    const updated = projects.filter(
-      (project) => project.id !== deletingProject.id,
+  /*
+   * Create or update project.
+   */
+  function handleSave(project: Project) {
+    /*
+     * Check whether this project already exists.
+     */
+    const exists = projects.some(
+      (existingProject) => existingProject.id === project.id,
     );
 
-    setProjects(updated);
+    if (exists) {
+      /*
+       * Update existing project.
+       */
+      updateProject(project);
+    } else {
+      /*
+       * Create new project.
+       */
+      addProject(project);
+    }
 
-    localStorage.setItem("projects", JSON.stringify(updated));
+    /*
+     * Close modal.
+     */
+    setEditingProject(null);
+    setShowModal(false);
+  }
+
+  /*
+   * Delete project.
+   */
+  function handleDelete() {
+    if (!deletingProject) {
+      return;
+    }
+
+    deleteProject(deletingProject.id);
 
     setDeletingProject(null);
   }
 
-function handleSave(project: Project) {
-  let updated: Project[];
-
-  const exists = projects.some((p) => p.id === project.id);
-
-  if (exists) {
-    updated = projects.map((p) => (p.id === project.id ? project : p));
-  } else {
-    updated = [...projects, project];
-  }
-
-  setProjects(updated);
-
-  localStorage.setItem("projects", JSON.stringify(updated));
-
-  setEditingProject(null);
-
-  setShowModal(false);
-}
+  /*
+   * Search projects.
+   */
+  const filteredProjects = projects.filter((project) =>
+    project.name.toLowerCase().includes(search.toLowerCase()),
+  );
 
   return (
-    <>
-      <div className="page p-6">
-        {/* Header */}
+    <div className="page min-h-full p-4 sm:p-6">
+      {/* =================================
+          HEADER
+      ================================== */}
 
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1>Projects</h1>
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1>Projects</h1>
 
-            <p className="mt-2">Manage and monitor all your projects.</p>
-          </div>
-
-          <button
-            onClick={() => setShowModal(true)}
-            className="btn-primary flex items-center gap-2"
-          >
-            <Plus size={20} />
-            New Project
-          </button>
+          <p className="mt-2">Manage and monitor all your projects.</p>
         </div>
 
-        {/* Search */}
+        <button
+          type="button"
+          onClick={() => {
+            setEditingProject(null);
+            setShowModal(true);
+          }}
+          className="btn-primary flex w-full items-center justify-center gap-2 md:w-auto"
+        >
+          <Plus size={20} />
+          New Project
+        </button>
+      </div>
 
-        <div className="relative mt-8 max-w-md">
-          <Search
-            size={18}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-          />
+      {/* search */}
 
-          <input placeholder="Search projects..." className="pl-11" />
-        </div>
+      <div className="relative mt-6 w-full max-w-md sm:mt-8">
+        <Search
+          size={18}
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+        />
 
-        {/* Cards */}
+        <input
+          type="text"
+          placeholder="Search projects..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full pl-11"
+        />
+      </div>
 
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {projects.length === 0 ? (
-            <div className="col-span-full rounded-xl border-2 border-dashed border-slate-300 p-12 text-center">
-              <h3>No projects yet</h3>
-              <p>Create your first project.</p>
-            </div>
-          ) : (
-            projects.map((project) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                onEdit={() => {
-                  setEditingProject(project);
+      {/* project card */}
+
+      <div className="mt-6 grid gap-5 sm:mt-8 sm:grid-cols-2 xl:grid-cols-3">
+        {filteredProjects.length === 0 ? (
+          /*
+           * Empty state.
+           */
+          <div className="col-span-full rounded-2xl border-2 border-dashed border-slate-300 bg-white p-8 text-center sm:p-12">
+            <h3 className="text-lg font-semibold text-slate-800">
+              {projects.length === 0 ? "No projects yet" : "No projects found"}
+            </h3>
+
+            <p className="mt-2 text-sm text-slate-500">
+              {projects.length === 0
+                ? "Create your first project to get started."
+                : "Try a different search term."}
+            </p>
+
+            {projects.length === 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingProject(null);
                   setShowModal(true);
                 }}
-                onDelete={() => setDeletingProject(project)}
-              />
-            ))
-          )}
-        </div>
+                className="btn-primary mt-5 inline-flex items-center gap-2"
+              >
+                <Plus size={18} />
+                Create Project
+              </button>
+            )}
+          </div>
+        ) : (
+          /*
+           * Display projects.
+           */
+          filteredProjects.map((project) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              onEdit={() => {
+                setEditingProject(project);
+                setShowModal(true);
+              }}
+              onDelete={() => {
+                setDeletingProject(project);
+              }}
+            />
+          ))
+        )}
       </div>
+
+      {/* =================================
+          CREATE / EDIT MODAL
+      ================================== */}
 
       {showModal && (
         <ProjectForm
@@ -121,13 +187,16 @@ function handleSave(project: Project) {
         />
       )}
 
+
       {deletingProject && (
         <DeleteProjectModal
           project={deletingProject}
-          onClose={() => setDeletingProject(null)}
+          onClose={() => {
+            setDeletingProject(null);
+          }}
           onConfirm={handleDelete}
         />
       )}
-    </>
+    </div>
   );
 }
