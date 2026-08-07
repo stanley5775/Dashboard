@@ -1,75 +1,77 @@
-# React + TypeScript + Vite
+#Project Management Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive project management dashboard built with React, TypeScript, Tailwind CSS, and React Router. The application allows users to manage projects and tasks, organize tasks with a Kanban board, and monitor progress through an analytics dashboard.
 
-Currently, two official plugins are available:
+#Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- #User authentication and protected routes
+- #Create, edit, and delete projects
+- #Create, edit, and delete tasks
+- #Search and filter tasks
+- #Kanban board with drag-and-drop
+- #Analytics dashboard
+- #Responsive design for desktop and mobile
+- #Nested and dynamic routing
+- #Persistent application state
 
-## React Compiler
+#Technologies
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React
+- TypeScript
+- Tailwind CSS
+- React Router
+- Context API
+- Lucide React
+- Axios
+- Vite
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+#Challenges & Solutions
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+React Router & 404 Errors
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+I initially had issues with dashboard routes returning a 404 after login. I solved this by restructuring my nested routes, protected routes, and "Outlet" usage.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Mobile Responsiveness
 
-```
+The Task page initially broke on smaller screens. I improved it using Tailwind's responsive utilities, adjusting flex layouts, widths, spacing, and overflow behavior.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Kanban Drag & Drop
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+I encountered issues while implementing drag-and-drop. I solved them by properly structuring the "DragDropContext", droppable columns, and draggable tasks, then updating the task status when a task was moved.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Shared State
 
-```
+As the application grew, passing project data between components became difficult. I introduced "ProjectContext" to provide shared project state across the application and make the analytics dashboard easier to implement.
+
+TypeScript & Component Errors
+
+I also encountered import/export and TypeScript errors during development. Debugging these helped me better understand typed props, custom types, module exports, and component structure.
+
+#What I Learned
+
+This project helped me strengthen my understanding of:
+
+- React component architecture
+- React Router and protected routes
+- Context API and shared state
+- TypeScript
+- Responsive Tailwind CSS
+- CRUD operations
+- Drag-and-drop interfaces
+- Debugging and problem solving
+- Git branching and meaningful commits
+
+#Getting Started
+
+git clone [repository-url]
+cd [project-folder]
+npm install
+npm run dev
+
+
+ #Author
+
+Stanley Ibekwe
+
+Frontend Developer
